@@ -78,3 +78,66 @@ console.log([1, 20, 10, 2].sort()); // [1, 10, 2, 20]
 console.log([1, 20, 10, 2].sort((a, b) => a - b)); // [1, 2, 10, 20]
 
 // functional programming
+const numbers = [1, 2, 3, 4, 5];
+
+console.log(numbers.map((n) => n * 2)); // [2, 4, 6, 8, 10]
+console.log(numbers);
+
+const doubleValues = (n) => n * 2;
+console.log(numbers.map(doubleValues)); // [2, 4, 6, 8, 10]
+
+console.log([1, 2, 3, 4, 5].map(function (n, i, a) {
+  return n * 2;
+}));
+
+Array.myMap = (cb) => {
+  const array = this;
+
+  for (const [value, index] of array.entries()) {
+    cb(value, index, array);
+  }
+}
+
+console.log(numbers.filter((n) => n & 1)); // [1, 3, 5]
+console.log(numbers.filter((n) => n > 10)); // []
+console.log(numbers.filter((n) => n > 0)); // [1, 2, 3, 4, 5]
+
+console.log(numbers.reduce((acc, n) => acc + n, 0)); // 15
+// acc | n | acc + n
+//  0  | 1 |   1
+//  1  | 2 |   3
+//  3  | 3 |   6
+//  6  | 4 |   10
+// 10  | 5 |   15
+console.log(numbers.reduce((acc, n) => {
+  return acc + n
+})); // 15
+// acc | n | acc + n
+//  1  | 2 |   3
+//  3  | 3 |   6
+//  6  | 4 |   10
+// 10  | 5 |   15
+console.log(numbers.reduce((acc, n) => acc * n, 1)); // 120
+
+console.log(numbers.some((n) => n > 3)); // true
+console.log(numbers.every((n) => n > 3)); // false
+console.log(numbers.every((n) => n > 0)); // true
+
+const investments = [
+  {
+    name: 'Tesouro Selic 2028',
+    value: 1000,
+  },
+  {
+    name: 'CDB X',
+    value: 5000,
+  },
+];
+
+console.log(investments.find((inv) => inv.name === 'CDB X')); // { name: 'CDB X', value: 5000 }
+
+const { value } = investments.find((inv) => inv.name === 'CDB X');
+const index = investments.findIndex((inv) => inv.name === 'CDB X');
+investments.splice(index, 1);
+investments.filter((inv, i) => index !== i);
+investments.filter((inv) => inv.name !== 'CDB X');
