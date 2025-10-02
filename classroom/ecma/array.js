@@ -90,13 +90,16 @@ console.log([1, 2, 3, 4, 5].map(function (n, i, a) {
   return n * 2;
 }));
 
-Array.myMap = (cb) => {
+Array.prototype.myMap = function (callback) {
   const array = this;
-
-  for (const [value, index] of array.entries()) {
-    cb(value, index, array);
+  const result = [];
+  for (const [index, value] of array.entries()) {
+    result.push(callback(value, index, array));
   }
+  return result;
 }
+
+console.log(numbers.myMap(doubleValues)); // [2, 4, 6, 8, 10]
 
 console.log(numbers.filter((n) => n & 1)); // [1, 3, 5]
 console.log(numbers.filter((n) => n > 10)); // []
