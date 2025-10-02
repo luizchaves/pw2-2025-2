@@ -45,7 +45,7 @@ export function sumOdds(array) {
   // return total;
   return array.length
     ? array
-      .filer((n) => n & 1)
-      .reduce((acc, curr) => acc + curr, 0)
+        .filter((n) => n & 1)
+        .reduce((acc, curr) => acc + curr, 0)
     : NaN;
 }
