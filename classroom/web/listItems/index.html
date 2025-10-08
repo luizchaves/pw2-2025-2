@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Lista</h1>
+  <ul></ul>
+  <script>
+    function generateList(qtd) {
+      // let items = '';
+
+      // for (let flag = 1; flag <= qtd; flag++) {
+      //   items += `<li>Item ${flag}</li>`
+      // }
+
+      // return items;
+      return Array
+        .from({ length: qtd }, (_, i) => `<li>Item ${i + 1}</li>`)
+        .join('');
+    }
+  </script>
+  <script>
+    // BOM (window)
+    const quantity = Number(prompt('Enter quantity:'));
+
+    // DOM (document)
+    const items = generateList(quantity);
+
+    const ul = document.querySelector('ul');
+
+    ul.innerHTML = items;
+  </script>
+</body>
+</html>
