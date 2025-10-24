@@ -1,6 +1,13 @@
 import { investments } from './data.js';
 import { formatCurrency, formatDate } from './lib/format.js';
 
+const investmentCards = document.querySelector('#investment-cards');
+const totalAmounts = document.querySelector('#total-amount');
+const totalAssets = document.querySelector('#total-assets span');
+const totalTypes = document.querySelector('#total-types span');
+
+window.removeInvestment = removeInvestment;
+
 function createInvestmentCard(investment) {
     return `
     <div
@@ -50,23 +57,36 @@ function createInvestmentCard(investment) {
     </div>`;
 }
 
+
+
 function removeInvestment(cardId) {
     // TODO remove card
+    const card = document.getElementById(cardId);
+    card.remove();
+
+    // TODO remove from investments array
+
+    const index = investments.findIndex(
+        (inv) => `investment-${inv.id}` === cardId
+    );
+
+    investments.splice(index, 1);
+
     // TODO update Stats Overview
+    updateStatsOverview();
 }
 
-const investmentCards = document.querySelector('#investment-cards');
-const totalAmounts = document.querySelector('#total-amount');
-const totalAssets = document.querySelector('#total-assets span');
-const totalTypes = document.querySelector('#total-types span');
-
-totalAmounts.textContent = formatCurrency(
-    investments.reduce((sum, inv) => sum + inv.amount, 0)
-);
-totalAssets.textContent = investments.length;
-totalTypes.textContent = new Set(investments.map((inv) => inv.type)).size;
+function updateStatsOverview() {
+    totalAmounts.textContent = formatCurrency(
+        investments.reduce((sum, inv) => sum + inv.amount, 0)
+    );
+    totalAssets.textContent = investments.length;
+    totalTypes.textContent = new Set(investments.map((inv) => inv.type)).size;
+}
 
 investments.forEach((investment) => {
     const card = createInvestmentCard(investment);
     investmentCards.insertAdjacentHTML('beforeend', card);
 });
+
+updateStatsOverview();
