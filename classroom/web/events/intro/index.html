@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello Event</title>
+</head>
+<body>
+  <h1>Hello Event</h1>
+  <button onclick="handleClick()">Print 1</button>
+  <button>Print 2</button>
+  <button>Print 3</button>
+  <script>
+    function handleClick() {
+      window.print();
+    }
+
+    const printBtn2 = document.querySelector('button:nth-of-type(2)');
+    const printBtn3 = document.querySelector('button:nth-of-type(3)');
+
+    // printBtn2.onclick = handleClick;
+    printBtn2.onclick = () => {
+      handleClick();
+    };
+
+    // printBtn3.addEventListener('click', handleClick);
+    printBtn3.addEventListener('click', (event) => {
+      handleClick();
+    });
+  </script>
+</body>
+</html>
