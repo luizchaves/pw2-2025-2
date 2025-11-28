@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/utils/cn';
 import { formatCurrency, formatDate } from '@/utils/format';
 
@@ -56,6 +58,10 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
   const colorClasses =
     colorClassMap[investment.color.toLowerCase()] || colorClassMap.blue; // Fallback para azul
 
+  const handleDeleteInvestment = () => {
+    alert('Funcionalidade de exclusão ainda não implementada');
+  };
+
   return (
     <div
       id={`investment-${investment.id}`}
@@ -75,6 +81,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
           className="text-white hover:text-red-200 transition-colors duration-200"
           aria-label="Excluir investimento"
           title="Excluir investimento"
+          onClick={handleDeleteInvestment}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
