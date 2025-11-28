@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
+import { formatCurrency } from '@/utils/format';
 
 const IconEye = () => (
   <svg
@@ -51,6 +52,7 @@ export default function Home() {
       origin: 'Tesouro Direto',
       type: 'Título Público',
       category: 'Conservador',
+      classification: 'Renda Fixa',
       date: '2024-03-15',
       color: 'blue',
     },
@@ -61,10 +63,19 @@ export default function Home() {
       origin: 'Tesouro Direto',
       type: 'Título Público',
       category: 'Conservador',
+      classification: 'Renda Fixa',
       date: '2024-03-15',
       color: 'blue',
     },
   ];
+
+  const totalAmounts = formatCurrency(
+    investments.reduce((sum, inv) => sum + inv.amount, 0)
+  );
+
+  const totalAssets = investments.length;
+
+  const totalTypes = new Set(investments.map((inv) => inv.type)).size;
 
   return (
     <>
@@ -102,7 +113,9 @@ export default function Home() {
               <p
                 id="total-amount"
                 className="text-3xl font-bold text-gray-800 mt-2"
-              ></p>
+              >
+                {isEyeOpen ? totalAmounts : 'R$ ****'}
+              </p>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
               <p className="text-gray-600 text-sm font-semibold uppercase">
@@ -112,7 +125,7 @@ export default function Home() {
                 id="total-assets"
                 className="text-3xl font-bold text-gray-800 mt-2"
               >
-                <span></span> ativos
+                <span>{totalAssets}</span> ativos
               </p>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -120,7 +133,7 @@ export default function Home() {
                 Tipos
               </p>
               <p id="total-types" className="text-3xl font-bold mt-2">
-                <span></span> tipos
+                <span>{totalTypes}</span> tipos
               </p>
             </div>
           </div>
@@ -132,7 +145,11 @@ export default function Home() {
           >
             {/* Investment cards will be dynamically inserted here */}
             {investments.map((investment) => (
-              <InvestmentCard key={investment.id} investment={investment} />
+              <InvestmentCard
+                key={investment.id}
+                investment={investment}
+                isEyeOpen={isEyeOpen}
+              />
             ))}
           </div>
         </main>

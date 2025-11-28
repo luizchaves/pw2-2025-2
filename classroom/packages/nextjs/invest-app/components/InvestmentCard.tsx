@@ -10,54 +10,17 @@ interface Investment {
   origin: string;
   type: string;
   category: string;
+  classification: string;
   date: string;
   color: string;
 }
 
 interface InvestmentCardProps {
   investment: Investment;
+  isEyeOpen: boolean;
 }
 
-// Mapa de cores predefinidas para evitar classes dinâmicas não detectáveis
-const colorClassMap: Record<string, { gradient: string; text: string }> = {
-  blue: {
-    gradient: 'bg-linear-to-r from-blue-500 to-blue-600',
-    text: 'text-blue-100',
-  },
-  red: {
-    gradient: 'bg-linear-to-r from-red-500 to-red-600',
-    text: 'text-red-100',
-  },
-  green: {
-    gradient: 'bg-linear-to-r from-green-500 to-green-600',
-    text: 'text-green-100',
-  },
-  purple: {
-    gradient: 'bg-linear-to-r from-purple-500 to-purple-600',
-    text: 'text-purple-100',
-  },
-  yellow: {
-    gradient: 'bg-linear-to-r from-yellow-500 to-yellow-600',
-    text: 'text-yellow-100',
-  },
-  pink: {
-    gradient: 'bg-linear-to-r from-pink-500 to-pink-600',
-    text: 'text-pink-100',
-  },
-  indigo: {
-    gradient: 'bg-linear-to-r from-indigo-500 to-indigo-600',
-    text: 'text-indigo-100',
-  },
-  teal: {
-    gradient: 'bg-linear-to-r from-teal-500 to-teal-600',
-    text: 'text-teal-100',
-  },
-};
-
-export function InvestmentCard({ investment }: InvestmentCardProps) {
-  const colorClasses =
-    colorClassMap[investment.color.toLowerCase()] || colorClassMap.blue; // Fallback para azul
-
+export function InvestmentCard({ investment, isEyeOpen }: InvestmentCardProps) {
   const handleDeleteInvestment = () => {
     alert('Funcionalidade de exclusão ainda não implementada');
   };
@@ -69,13 +32,13 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     >
       <div
         className={cn(
-          colorClasses.gradient,
+          `bg-linear-to-r from-${investment.color}-500 to-${investment.color}-600`,
           'p-4 flex items-start justify-between'
         )}
       >
         <div>
           <h3 className="text-xl font-bold text-white">{investment.name}</h3>
-          <p className={cn(colorClasses.text, 'text-sm')}>{investment.type}</p>
+          <p className="text-white text-sm">{investment.classification}</p>
         </div>
         <button
           className="text-white hover:text-red-200 transition-colors duration-200"
@@ -102,7 +65,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
       <div className="p-6">
         <div className="mb-4">
           <p className="text-3xl font-bold text-gray-800">
-            {formatCurrency(investment.amount)}
+            {isEyeOpen ? formatCurrency(investment.amount) : 'R$  ****'}
           </p>
           <p className="text-sm text-gray-500">Valor investido</p>
         </div>
