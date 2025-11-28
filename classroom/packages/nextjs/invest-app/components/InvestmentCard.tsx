@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn';
 import { formatCurrency, formatDate } from '@/utils/format';
 
 interface Investment {
@@ -15,20 +16,60 @@ interface InvestmentCardProps {
   investment: Investment;
 }
 
+// Mapa de cores predefinidas para evitar classes dinâmicas não detectáveis
+const colorClassMap: Record<string, { gradient: string; text: string }> = {
+  blue: {
+    gradient: 'bg-linear-to-r from-blue-500 to-blue-600',
+    text: 'text-blue-100',
+  },
+  red: {
+    gradient: 'bg-linear-to-r from-red-500 to-red-600',
+    text: 'text-red-100',
+  },
+  green: {
+    gradient: 'bg-linear-to-r from-green-500 to-green-600',
+    text: 'text-green-100',
+  },
+  purple: {
+    gradient: 'bg-linear-to-r from-purple-500 to-purple-600',
+    text: 'text-purple-100',
+  },
+  yellow: {
+    gradient: 'bg-linear-to-r from-yellow-500 to-yellow-600',
+    text: 'text-yellow-100',
+  },
+  pink: {
+    gradient: 'bg-linear-to-r from-pink-500 to-pink-600',
+    text: 'text-pink-100',
+  },
+  indigo: {
+    gradient: 'bg-linear-to-r from-indigo-500 to-indigo-600',
+    text: 'text-indigo-100',
+  },
+  teal: {
+    gradient: 'bg-linear-to-r from-teal-500 to-teal-600',
+    text: 'text-teal-100',
+  },
+};
+
 export function InvestmentCard({ investment }: InvestmentCardProps) {
+  const colorClasses =
+    colorClassMap[investment.color.toLowerCase()] || colorClassMap.blue; // Fallback para azul
+
   return (
     <div
       id={`investment-${investment.id}`}
       className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
     >
       <div
-        className={`bg-gradient-to-r from-${investment.color}-500 to-${investment.color}-600 p-4 flex items-start justify-between`}
+        className={cn(
+          colorClasses.gradient,
+          'p-4 flex items-start justify-between'
+        )}
       >
         <div>
           <h3 className="text-xl font-bold text-white">{investment.name}</h3>
-          <p className={`text-${investment.color}-100 text-sm`}>
-            {investment.type}
-          </p>
+          <p className={cn(colorClasses.text, 'text-sm')}>{investment.type}</p>
         </div>
         <button
           className="text-white hover:text-red-200 transition-colors duration-200"

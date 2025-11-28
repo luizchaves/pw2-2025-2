@@ -27,8 +27,8 @@ export default function Home() {
   return (
     <>
       {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-6">
+      <header>
+        <div className="container mx-auto px-4 py-6 text-center">
           <h1 className="text-3xl font-bold text-gray-800">
             <span className="text-blue-600">💰</span> Meus Investimentos
           </h1>
