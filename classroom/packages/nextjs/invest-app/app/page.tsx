@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
 import { formatCurrency } from '@/utils/format';
+import { investments } from '@/data/investments';
 
 const IconEye = () => (
   <svg
@@ -43,31 +44,6 @@ const IconEyeOff = () => (
 
 export default function Home() {
   const [isEyeOpen, setIsEyeOpen] = useState(true);
-
-  const investments = [
-    {
-      id: 'a3f5e8c7-2d4b-4a9e-8f1c-5b3d7e9a2c1f',
-      name: 'Tesouro Selic 2027',
-      amount: 2500000,
-      origin: 'Tesouro Direto',
-      type: 'Título Público',
-      category: 'Conservador',
-      classification: 'Renda Fixa',
-      date: '2024-03-15',
-      color: 'blue',
-    },
-    {
-      id: 'd68e2287-35d4-4d1c-984e-ac6744c0d388',
-      name: 'Tesouro Selic 2027',
-      amount: 2500000,
-      origin: 'Tesouro Direto',
-      type: 'Título Público',
-      category: 'Conservador',
-      classification: 'Renda Fixa',
-      date: '2024-03-15',
-      color: 'blue',
-    },
-  ];
 
   const totalAmounts = formatCurrency(
     investments.reduce((sum, inv) => sum + inv.amount, 0)
