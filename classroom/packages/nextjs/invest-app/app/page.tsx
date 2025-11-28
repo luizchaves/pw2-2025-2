@@ -119,14 +119,22 @@ export default function Home() {
             id="investment-cards"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {/* Investment cards will be dynamically inserted here */}
-            {investments.map((investment) => (
-              <InvestmentCard
-                key={investment.id}
-                investment={investment}
-                isEyeOpen={isEyeOpen}
-              />
-            ))}
+            {investments.length > 0 ? (
+              investments.map((investment) => (
+                <InvestmentCard
+                  key={investment.id}
+                  investment={investment}
+                  isEyeOpen={isEyeOpen}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500 text-lg">
+                  Nenhum investimento registrado. Comece a adicionar seus
+                  investimentos!
+                </p>
+              </div>
+            )}
           </div>
         </main>
       </div>
