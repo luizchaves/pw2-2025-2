@@ -26,10 +26,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-linear-to-br from-gray-50 to-gray-100 min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-linear-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col`}
       >
         <NavBar />
-        {children}
+
+        <main className="flex-1">{children}</main>
+
+        {/* Footer */}
+        <footer className="bg-white shadow-md">
+          <div className="container mx-auto px-4 py-6 text-center text-gray-600">
+            <p>&copy; 2025 Meus Investimentos. Todos os direitos reservados.</p>
+          </div>
+        </footer>
       </body>
     </html>
   );
