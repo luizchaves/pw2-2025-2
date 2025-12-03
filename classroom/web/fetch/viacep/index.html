@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script type="module">
+    const cep = '01001000';
+
+    async function getCepInfo(cep) {
+      const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      return data;
+    }
+
+    const cepInfo = await getCepInfo(cep);
+
+    console.log(cepInfo);
+  </script>
+</body>
+</html>
