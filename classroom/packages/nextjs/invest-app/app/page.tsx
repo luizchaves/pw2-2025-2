@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
 import { formatCurrency } from '@/utils/format';
-import { investments } from '@/data/investments';
+import {
+  Investment,
+  investments as initialInvestments,
+} from '@/data/investments';
 
 const IconEye = () => (
   <svg
@@ -44,6 +47,13 @@ const IconEyeOff = () => (
 
 export default function Home() {
   const [isEyeOpen, setIsEyeOpen] = useState(true);
+
+  // setInvestments([...investments, newInvestment])
+  const [investments, setInvestments] = useState<Investment[]>([]);
+
+  useEffect(() => {
+    setInvestments(initialInvestments);
+  }, []);
 
   const totalAmounts = formatCurrency(
     investments.reduce((sum, inv) => sum + inv.amount, 0)
