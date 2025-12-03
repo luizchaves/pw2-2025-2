@@ -53,6 +53,10 @@ export default function Home() {
 
   const totalTypes = new Set(investments.map((inv) => inv.type)).size;
 
+  const handleToggleEye = () => {
+    setIsEyeOpen(!isEyeOpen);
+  };
+
   return (
     <>
       <div className="flex flex-col">
@@ -69,7 +73,7 @@ export default function Home() {
                 </p>
               </div>
               <button
-                onClick={() => setIsEyeOpen(!isEyeOpen)}
+                onClick={() => handleToggleEye()}
                 className="hover:scale-110 transition-transform cursor-pointer ml-4 p-2"
                 aria-label="Toggle visibility"
               >
