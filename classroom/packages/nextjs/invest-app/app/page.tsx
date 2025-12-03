@@ -55,6 +55,22 @@ export default function Home() {
     setInvestments(initialInvestments);
   }, []);
 
+  const newInvestmentTemplate: Investment = {
+    id: `investment-${Date.now()}`,
+    name: 'Novo Investimento',
+    amount: 100,
+    origin: 'Não especificado',
+    type: 'A definir',
+    category: 'Moderado',
+    classification: 'Renda Fixa',
+    date: new Date().toISOString().split('T')[0],
+    color: 'gray',
+  };
+
+  const handleAddInvestment = () => {
+    setInvestments([...investments, newInvestmentTemplate]);
+  };
+
   const totalAmounts = formatCurrency(
     investments.reduce((sum, inv) => sum + inv.amount, 0)
   );
@@ -83,7 +99,7 @@ export default function Home() {
                 </p>
               </div>
               <button
-                onClick={() => handleToggleEye()}
+                onClick={() => setIsEyeOpen(!isEyeOpen)}
                 className="hover:scale-110 transition-transform cursor-pointer ml-4 p-2"
                 aria-label="Toggle visibility"
               >
@@ -152,6 +168,15 @@ export default function Home() {
           </div>
         </main>
       </div>
+
+      {/* Floating Add Button */}
+      <button
+        onClick={handleAddInvestment}
+        className="fixed bottom-24 right-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-full shadow-lg transition-all hover:scale-110 flex items-center gap-2 z-50"
+        aria-label="Add new investment"
+      >
+        <span className="text-2xl">+</span>
+      </button>
     </>
   );
 }
