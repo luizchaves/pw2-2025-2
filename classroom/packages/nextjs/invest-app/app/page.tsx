@@ -99,7 +99,7 @@ export default function Home() {
                 </p>
               </div>
               <button
-                onClick={() => setIsEyeOpen(!isEyeOpen)}
+                onClick={() => handleToggleEye()}
                 className="hover:scale-110 transition-transform cursor-pointer ml-4 p-2"
                 aria-label="Toggle visibility"
               >
