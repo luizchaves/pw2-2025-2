@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { IStorage } from './storage.interface';
 
 const API_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 const API_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -61,4 +62,6 @@ async function remove(resource: string, id: string): Promise<boolean> {
   return true;
 }
 
-export default { create, read, update, remove };
+const StorageSupabaseClient: IStorage = { create, read, update, remove };
+
+export default StorageSupabaseClient;

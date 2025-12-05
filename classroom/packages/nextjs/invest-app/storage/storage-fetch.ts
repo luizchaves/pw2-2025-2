@@ -1,3 +1,5 @@
+import { IStorage } from './storage.interface';
+
 const API_TOKEN = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 const API_URL = process.env.NEXT_PUBLIC_SUPABASE_URL + '/rest/v1';
 
@@ -81,4 +83,6 @@ async function remove(resource: string, id: string): Promise<boolean> {
   return res.ok;
 }
 
-export default { create, read, update, remove };
+const StorageFetch: IStorage = { create, read, update, remove };
+
+export default StorageFetch;
