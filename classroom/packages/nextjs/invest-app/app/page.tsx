@@ -3,10 +3,8 @@
 import { useEffect, useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
 import { formatCurrency } from '@/utils/format';
-import {
-  Investment,
-  investments as initialInvestments,
-} from '@/data/investments';
+import { Investment, InvestmentInput } from '@/types';
+import Storage from '@/storage/storage-supabase-client';
 
 const IconEye = () => (
   <svg
@@ -52,23 +50,33 @@ export default function Home() {
   const [investments, setInvestments] = useState<Investment[]>([]);
 
   useEffect(() => {
-    setInvestments(initialInvestments);
+    const loadInvestments = async () => {
+      const data = await Storage.read<Investment>('investments');
+
+      setInvestments(data as Investment[]);
+    };
+
+    loadInvestments();
   }, []);
 
-  const newInvestmentTemplate: Investment = {
-    id: `investment-${Date.now()}`,
-    name: 'Novo Investimento',
-    amount: 100,
-    origin: 'Não especificado',
-    type: 'A definir',
-    category: 'Moderado',
-    classification: 'Renda Fixa',
-    date: new Date().toISOString().split('T')[0],
-    color: 'gray',
-  };
+  const handleAddInvestment = async () => {
+    const newInvestmentTemplate: InvestmentInput = {
+      name: 'Tesouro IPCA 2050',
+      amount: 10000,
+      origin: 'Não especificado',
+      type: 'Tesouro Direto',
+      category: 'Conservador',
+      classification: 'Renda Fixa',
+      created_at: new Date().toISOString().split('T')[0],
+      color: 'blue',
+    };
 
-  const handleAddInvestment = () => {
-    setInvestments([...investments, newInvestmentTemplate]);
+    const createdInvestment = await Storage.create<InvestmentInput>(
+      'investments',
+      newInvestmentTemplate
+    );
+
+    setInvestments([...investments, createdInvestment as Investment]);
   };
 
   const totalAmounts = formatCurrency(
