@@ -43,6 +43,21 @@ sumAsync(5, 5)
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
 
+
+sumAsync(5, 5)
+  .then((result) => sumAsync(result, 1))
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+
+try {
+  const result = await sumAsync(5, 5);
+  const finalResult = await sumAsync(result, 2);
+
+  console.log(finalResult);
+} catch (error) {
+  console.error(error);
+}
+
 // sumAsync(5, undefined)
 //   .then((result) => console.log(result))
 //   .catch((error) => console.error(error));
