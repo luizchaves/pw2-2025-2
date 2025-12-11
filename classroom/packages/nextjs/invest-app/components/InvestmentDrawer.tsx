@@ -6,7 +6,7 @@ import { InvestmentInput } from '@/types';
 interface InvestmentDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (investment: InvestmentInput) => void;
+  onSubmit: (investment: InvestmentInput) => Promise<void>;
 }
 
 const INITIAL_FORM_STATE: InvestmentInput = {
@@ -26,8 +26,8 @@ export function InvestmentDrawer({
   onSubmit,
 }: InvestmentDrawerProps) {
   const [formData, setFormData] = useState<InvestmentInput>(INITIAL_FORM_STATE);
-
   const [displayAmount, setDisplayAmount] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -62,19 +62,22 @@ export function InvestmentDrawer({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    onSubmit({
-      ...formData,
-      amount: Math.round(formData.amount * 100),
-    });
+    try {
+      await onSubmit({
+        ...formData,
+        amount: Math.round(formData.amount * 100),
+      });
 
-    setFormData(INITIAL_FORM_STATE);
-
-    setDisplayAmount('');
-
-    onClose();
+      setFormData(INITIAL_FORM_STATE);
+      setDisplayAmount('');
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -281,15 +284,24 @@ export function InvestmentDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Salvar
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Salvando...</span>
+                  </>
+                ) : (
+                  'Salvar'
+                )}
               </button>
             </div>
           </form>

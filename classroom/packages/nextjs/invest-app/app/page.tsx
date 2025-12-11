@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
+import { InvestmentCardSkeleton } from '@/components/InvestmentCardSkeleton';
 import { InvestmentDrawer } from '@/components/InvestmentDrawer';
 import { IconEye, IconEyeOff } from '@/components/Icons';
 import { formatCurrency } from '@/utils/format';
@@ -12,6 +13,7 @@ export default function Home() {
   const [isEyeOpen, setIsEyeOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isCreatingInvestment, setIsCreatingInvestment] = useState(false);
 
   const [investments, setInvestments] = useState<Investment[]>([]);
 
@@ -29,12 +31,18 @@ export default function Home() {
   }, []);
 
   const handleAddInvestment = async (investmentData: InvestmentInput) => {
-    const createdInvestment = await Storage.create<InvestmentInput>(
-      'investments',
-      investmentData
-    );
+    setIsCreatingInvestment(true);
 
-    setInvestments([...investments, createdInvestment as Investment]);
+    try {
+      const createdInvestment = await Storage.create<InvestmentInput>(
+        'investments',
+        investmentData
+      );
+
+      setInvestments([...investments, createdInvestment as Investment]);
+    } finally {
+      setIsCreatingInvestment(false);
+    }
   };
 
   const totalAmounts = formatCurrency(
@@ -116,22 +124,22 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {isLoading ? (
-              <div className="col-span-full flex items-center justify-center py-24">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-                  <p className="text-gray-600 text-lg">
-                    Carregando investimentos...
-                  </p>
-                </div>
-              </div>
-            ) : investments.length > 0 ? (
-              investments.map((investment) => (
-                <InvestmentCard
-                  key={investment.id}
-                  investment={investment}
-                  isEyeOpen={isEyeOpen}
-                />
-              ))
+              <>
+                <InvestmentCardSkeleton />
+                <InvestmentCardSkeleton />
+                <InvestmentCardSkeleton />
+              </>
+            ) : investments.length > 0 || isCreatingInvestment ? (
+              <>
+                {investments.map((investment) => (
+                  <InvestmentCard
+                    key={investment.id}
+                    investment={investment}
+                    isEyeOpen={isEyeOpen}
+                  />
+                ))}
+                {isCreatingInvestment && <InvestmentCardSkeleton />}
+              </>
             ) : (
               <div className="col-span-full text-center py-12">
                 <p className="text-gray-500 text-lg">
