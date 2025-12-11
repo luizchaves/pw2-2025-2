@@ -45,6 +45,15 @@ export default function Home() {
     }
   };
 
+  const handleRemoveInvestment = async (investmentId: string) => {
+    try {
+      await Storage.remove('investments', investmentId);
+      setInvestments(investments.filter((inv) => inv.id !== investmentId));
+    } catch (error) {
+      console.error('Erro ao remover investimento:', error);
+    }
+  };
+
   const totalAmounts = formatCurrency(
     investments.reduce((sum, inv) => sum + inv.amount, 0)
   );
@@ -136,6 +145,7 @@ export default function Home() {
                     key={investment.id}
                     investment={investment}
                     isEyeOpen={isEyeOpen}
+                    onRemove={handleRemoveInvestment}
                   />
                 ))}
                 {isCreatingInvestment && <InvestmentCardSkeleton />}

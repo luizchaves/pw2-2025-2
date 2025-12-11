@@ -1,18 +1,40 @@
 'use client';
 
+import { useState } from 'react';
 import { cn } from '@/utils/cn';
 import { formatCurrency, formatDate } from '@/utils/format';
 import { Investment } from '@/types';
 import { getGradientClass } from '@/utils/colors';
+import { ConfirmModal } from './ConfirmModal';
 
 interface InvestmentCardProps {
   investment: Investment;
   isEyeOpen: boolean;
+  onRemove?: (investmentId: string) => Promise<void>;
 }
 
-export function InvestmentCard({ investment, isEyeOpen }: InvestmentCardProps) {
-  const handleDeleteInvestment = () => {
-    alert('Funcionalidade de exclusão ainda não implementada');
+export function InvestmentCard({
+  investment,
+  isEyeOpen,
+  onRemove,
+}: InvestmentCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteInvestment = async () => {
+    setIsDeleting(true);
+    try {
+      if (onRemove) {
+        await onRemove(investment.id);
+      }
+      setIsModalOpen(false);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsModalOpen(true);
   };
 
   const gradientClass = getGradientClass(investment.color);
@@ -36,7 +58,7 @@ export function InvestmentCard({ investment, isEyeOpen }: InvestmentCardProps) {
           className="text-white hover:text-red-200 transition-colors duration-200"
           aria-label="Excluir investimento"
           title="Excluir investimento"
-          onClick={handleDeleteInvestment}
+          onClick={handleOpenDeleteModal}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -88,6 +110,18 @@ export function InvestmentCard({ investment, isEyeOpen }: InvestmentCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Remover Investimento"
+        message={`Tem certeza que deseja remover "${investment.name}"? Esta ação não pode ser desfeita.`}
+        confirmText="Remover"
+        cancelText="Cancelar"
+        isLoading={isDeleting}
+        onConfirm={handleDeleteInvestment}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
