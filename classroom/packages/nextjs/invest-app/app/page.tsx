@@ -1,15 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/useToast';
 import { InvestmentCard } from '@/components/InvestmentCard';
 import { InvestmentCardSkeleton } from '@/components/InvestmentCardSkeleton';
 import { InvestmentDrawer } from '@/components/InvestmentDrawer';
+import { ToastContainer } from '@/components/ToastContainer';
 import { IconEye, IconEyeOff } from '@/components/Icons';
 import { formatCurrency } from '@/utils/format';
 import { Investment, InvestmentInput } from '@/types';
 import Storage from '@/storage/storage-supabase-client';
 
 export default function Home() {
+  const { showToast } = useToast();
   const [isEyeOpen, setIsEyeOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -40,6 +43,7 @@ export default function Home() {
       );
 
       setInvestments([...investments, createdInvestment as Investment]);
+      showToast(`${investmentData.name} adicionado com sucesso!`, 'success');
     } finally {
       setIsCreatingInvestment(false);
     }
@@ -48,9 +52,13 @@ export default function Home() {
   const handleRemoveInvestment = async (investmentId: string) => {
     try {
       await Storage.remove('investments', investmentId);
+      const removedInvestment = investments.find(
+        (inv) => inv.id === investmentId
+      );
       setInvestments(investments.filter((inv) => inv.id !== investmentId));
+      showToast(`${removedInvestment?.name} removido com sucesso!`, 'success');
     } catch (error) {
-      console.error('Erro ao remover investimento:', error);
+      showToast('Erro ao remover investimento. Tente novamente.', 'error');
     }
   };
 
@@ -177,6 +185,9 @@ export default function Home() {
         onClose={() => setIsDrawerOpen(false)}
         onSubmit={handleAddInvestment}
       />
+
+      {/* Toast Container */}
+      <ToastContainer />
     </>
   );
 }
