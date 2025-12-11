@@ -45,15 +45,19 @@ const IconEyeOff = () => (
 
 export default function Home() {
   const [isEyeOpen, setIsEyeOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // setInvestments([...investments, newInvestment])
   const [investments, setInvestments] = useState<Investment[]>([]);
 
   useEffect(() => {
     const loadInvestments = async () => {
-      const data = await Storage.read<Investment>('investments');
-
-      setInvestments(data as Investment[]);
+      try {
+        const data = await Storage.read<Investment>('investments');
+        setInvestments(data as Investment[]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadInvestments();
@@ -157,7 +161,16 @@ export default function Home() {
             id="investment-cards"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {investments.length > 0 ? (
+            {isLoading ? (
+              <div className="col-span-full flex items-center justify-center py-24">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                  <p className="text-gray-600 text-lg">
+                    Carregando investimentos...
+                  </p>
+                </div>
+              </div>
+            ) : investments.length > 0 ? (
               investments.map((investment) => (
                 <InvestmentCard
                   key={investment.id}
