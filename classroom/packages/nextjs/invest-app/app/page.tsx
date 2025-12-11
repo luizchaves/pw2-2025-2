@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { InvestmentCard } from '@/components/InvestmentCard';
+import { InvestmentDrawer } from '@/components/InvestmentDrawer';
 import { IconEye, IconEyeOff } from '@/components/Icons';
 import { formatCurrency } from '@/utils/format';
 import { Investment, InvestmentInput } from '@/types';
@@ -10,8 +11,8 @@ import Storage from '@/storage/storage-supabase-client';
 export default function Home() {
   const [isEyeOpen, setIsEyeOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // setInvestments([...investments, newInvestment])
   const [investments, setInvestments] = useState<Investment[]>([]);
 
   useEffect(() => {
@@ -27,21 +28,10 @@ export default function Home() {
     loadInvestments();
   }, []);
 
-  const handleAddInvestment = async () => {
-    const newInvestmentTemplate: InvestmentInput = {
-      name: 'Tesouro IPCA 2050',
-      amount: 10000,
-      origin: 'Não especificado',
-      type: 'Tesouro Direto',
-      category: 'Conservador',
-      classification: 'Renda Fixa',
-      created_at: new Date().toISOString().split('T')[0],
-      color: 'blue',
-    };
-
+  const handleAddInvestment = async (investmentData: InvestmentInput) => {
     const createdInvestment = await Storage.create<InvestmentInput>(
       'investments',
-      newInvestmentTemplate
+      investmentData
     );
 
     setInvestments([...investments, createdInvestment as Investment]);
@@ -156,12 +146,19 @@ export default function Home() {
 
       {/* Floating Add Button */}
       <button
-        onClick={handleAddInvestment}
+        onClick={() => setIsDrawerOpen(true)}
         className="fixed bottom-24 right-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-full shadow-lg transition-all hover:scale-110 flex items-center gap-2 z-50"
         aria-label="Add new investment"
       >
         <span className="text-2xl">+</span>
       </button>
+
+      {/* Investment Drawer */}
+      <InvestmentDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSubmit={handleAddInvestment}
+      />
     </>
   );
 }
