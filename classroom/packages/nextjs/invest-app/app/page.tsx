@@ -2,60 +2,48 @@
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/useToast';
+import { useInvestments } from '@/contexts/InvestmentContext';
 import { InvestmentCard } from '@/components/InvestmentCard';
 import { InvestmentCardSkeleton } from '@/components/InvestmentCardSkeleton';
 import { InvestmentDrawer } from '@/components/InvestmentDrawer';
 import { ToastContainer } from '@/components/ToastContainer';
 import { IconEye, IconEyeOff } from '@/components/Icons';
 import { formatCurrency } from '@/utils/format';
-import { Investment, InvestmentInput } from '@/types';
-import Storage from '@/storage/storage-supabase-client';
+import { InvestmentInput } from '@/types';
 
 export default function Home() {
   const { showToast } = useToast();
-  const [isEyeOpen, setIsEyeOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isCreatingInvestment, setIsCreatingInvestment] = useState(false);
+  const {
+    investments,
+    isLoading,
+    isCreatingInvestment,
+    loadInvestments,
+    addInvestment,
+    removeInvestment,
+  } = useInvestments();
 
-  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [isEyeOpen, setIsEyeOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    const loadInvestments = async () => {
-      try {
-        const data = await Storage.read<Investment>('investments');
-        setInvestments(data as Investment[]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadInvestments();
   }, []);
 
   const handleAddInvestment = async (investmentData: InvestmentInput) => {
-    setIsCreatingInvestment(true);
-
     try {
-      const createdInvestment = await Storage.create<InvestmentInput>(
-        'investments',
-        investmentData
-      );
-
-      setInvestments([...investments, createdInvestment as Investment]);
+      await addInvestment(investmentData);
       showToast(`${investmentData.name} adicionado com sucesso!`, 'success');
-    } finally {
-      setIsCreatingInvestment(false);
+    } catch (error) {
+      showToast('Erro ao adicionar investimento. Tente novamente.', 'error');
     }
   };
 
   const handleRemoveInvestment = async (investmentId: string) => {
     try {
-      await Storage.remove('investments', investmentId);
       const removedInvestment = investments.find(
         (inv) => inv.id === investmentId
       );
-      setInvestments(investments.filter((inv) => inv.id !== investmentId));
+      await removeInvestment(investmentId);
       showToast(`${removedInvestment?.name} removido com sucesso!`, 'success');
     } catch (error) {
       showToast('Erro ao remover investimento. Tente novamente.', 'error');
