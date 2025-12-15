@@ -1,5 +1,6 @@
 export interface Investment {
   id: string;
+  userId?: string;
   name: string;
   amount: number;
   origin: string;

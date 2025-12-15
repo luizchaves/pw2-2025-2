@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { Investment, InvestmentInput } from '@/types';
 import Storage from '@/storage/storage-supabase-client';
+import { useAuth } from './AuthContext';
 
 interface InvestmentContextType {
   investments: Investment[];
@@ -21,6 +22,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingInvestment, setIsCreatingInvestment] = useState(false);
+  const { user } = useAuth();
 
   const loadInvestments = async () => {
     try {
@@ -35,9 +37,14 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     setIsCreatingInvestment(true);
 
     try {
-      const createdInvestment = await Storage.create<InvestmentInput>(
+      const investmentWithUserId = {
+        ...investmentData,
+        userId: user?.id,
+      };
+
+      const createdInvestment = await Storage.create<any>(
         'investments',
-        investmentData
+        investmentWithUserId
       );
 
       setInvestments([...investments, createdInvestment as Investment]);
